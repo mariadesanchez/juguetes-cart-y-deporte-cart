@@ -217,6 +217,7 @@ async function handler(req, res) {
   const buscaModelo = !ean && codigo ? codigo : '';
   // Medidas pedidas ("horno eléctrico 20 L"): se busca sin ellas y después se dejan solo los que las tienen
   const medQ = !ean && !buscaModelo ? rel.medidas(q) : [];
+  const qOriginal = q;
   if (medQ.length) q = rel.sinMedidas(q) || q;
   const limitePedido = Math.min(Math.max(parseInt(query.limite, 10) || 48, 1), 50);
   const limite = medQ.length ? 50 : limitePedido;
@@ -245,6 +246,10 @@ async function handler(req, res) {
       if (r.ps.some(p => p.exacto)) { productos = r.ps; buscadoPor = 'modelo'; }
     }
     if (!productos.length) { const r = await buscarEn(q, ean); productos = r.ps; buscadoPor = r.por; }
+    // Con medida, también se busca con la medida puesta (la tienda devuelve primero los más grandes)
+    if (medQ.length) {
+      try { const r2 = await buscarEn(qOriginal, ''); const ya = new Set(productos.map(p => p.link)); r2.ps.forEach(p => { if (!ya.has(p.link)) productos.push(p); }); } catch (_) { /* con lo que hay */ }
+    }
     if ((ean || buscaModelo) && q) marcarPorModelo(productos, q);
     if (buscadoPor === 'nombre' && productos.some(p => p.por_modelo)) buscadoPor = 'modelo';
     // Búsqueda por nombre: se sacan los resultados que no tienen que ver (iMacs al buscar "horno eléctrico")
