@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Juguetes y Deporte Cart">
 <meta name="application-name" content="Juguetes y Deporte Cart">
-<meta name="description" content="Juguetes, zapatillas, ropa deportiva y bicis: comparación de precios entre 8 tiendas, ofertas y tus listas con el mail diario de precios.">
+<meta name="description" content="Juguetes, zapatillas, ropa deportiva y bicis: comparación de precios entre 7 tiendas, ofertas y tus listas con el mail diario de precios.">
 <title>Juguetes y Deporte Cart</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async></script>
@@ -743,7 +743,7 @@
 </style>
 </head>
 <body class="gated">
-<div class="ticker" aria-hidden="true" data-view="inicio"><div class="run"><span>🎄 Regalos de Navidad al mejor precio</span><span>🧸 Juguetes: Cebra, Kinderland y Frávega</span><span>👟 Zapatillas y ropa: Dexter, Moov, Stock Center, Sporting y Grid</span><span>🚲 Bicis, pelotas y todo para el deporte</span><span>📧 Tu lista con los precios de hoy, en tu mail</span><span>🎄 Regalos de Navidad al mejor precio</span><span>🧸 Juguetes: Cebra, Kinderland y Frávega</span><span>👟 Zapatillas y ropa: Dexter, Moov, Stock Center, Sporting y Grid</span><span>🚲 Bicis, pelotas y todo para el deporte</span><span>📧 Tu lista con los precios de hoy, en tu mail</span></div></div>
+<div class="ticker" aria-hidden="true" data-view="inicio"><div class="run"><span>🎄 Regalos de Navidad al mejor precio</span><span>🧸 Juguetes: Cebra y Kinderland</span><span>👟 Zapatillas y ropa: Dexter, Moov, Stock Center, Sporting y Grid</span><span>🚲 Bicis, pelotas y todo para el deporte</span><span>📧 Tu lista con los precios de hoy, en tu mail</span><span>🎄 Regalos de Navidad al mejor precio</span><span>🧸 Juguetes: Cebra y Kinderland</span><span>👟 Zapatillas y ropa: Dexter, Moov, Stock Center, Sporting y Grid</span><span>🚲 Bicis, pelotas y todo para el deporte</span><span>📧 Tu lista con los precios de hoy, en tu mail</span></div></div>
 <header class="hero" id="hero" data-view="inicio">
   <div class="hero-in">
     <div class="brand"><span class="badge" id="netBadge" hidden>Sin conexión</span></div>
@@ -831,7 +831,7 @@
       <label class="of-to">Agregar a <select id="ofList" aria-label="Lista donde se agregan las ofertas"></select></label>
     </div>
     <div class="of-tiendas" id="ofTiendas" role="tablist" aria-label="Tienda">
-      <button type="button" data-t="cebra">Cebra</button><button type="button" data-t="fravega">Frávega</button><button type="button" data-t="sporting">Sporting</button><button type="button" data-t="grid">Grid</button>
+      <button type="button" data-t="cebra">Cebra</button><button type="button" data-t="sporting">Sporting</button><button type="button" data-t="grid">Grid</button>
     </div>
     <div class="card of-card">
       <div class="of-search">
@@ -932,7 +932,6 @@
     <div class="seg" id="superSel" role="tablist" aria-label="Tienda" style="margin-top:12px" hidden>
       <button type="button" role="tab" data-super="cebra">Cebra</button>
       <button type="button" role="tab" data-super="kinderland">Kinderland</button>
-      <button type="button" role="tab" data-super="fravega">Frávega</button>
       <button type="button" role="tab" data-super="dexter">Dexter</button>
       <button type="button" role="tab" data-super="moov">Moov</button>
       <button type="button" role="tab" data-super="stockcenter">Stock Center</button>
@@ -1037,7 +1036,6 @@
         <div class="ss-supers" id="supersSel">
           <label><input type="checkbox" value="cebra"><span>Cebra</span></label>
           <label><input type="checkbox" value="kinderland"><span>Kinderland</span></label>
-          <label><input type="checkbox" value="fravega"><span>Frávega</span></label>
           <label><input type="checkbox" value="dexter"><span>Dexter</span></label>
           <label><input type="checkbox" value="moov"><span>Moov</span></label>
           <label><input type="checkbox" value="stockcenter"><span>Stock Center</span></label>
@@ -1556,7 +1554,7 @@
 
   // ---------- ajustes ----------
   let cfg = Object.assign({ suc: '200', auto: true, super: 'farmaonline' }, store.get('super-ajustes', {}));
-  const SUPERS = { cebra: 'Cebra', kinderland: 'Kinderland', fravega: 'Frávega', dexter: 'Dexter', moov: 'Moov', stockcenter: 'Stock Center', sporting: 'Sporting', grid: 'Grid' };
+  const SUPERS = { cebra: 'Cebra', kinderland: 'Kinderland', dexter: 'Dexter', moov: 'Moov', stockcenter: 'Stock Center', sporting: 'Sporting', grid: 'Grid' };
   if (!SUPERS[cfg.super]) cfg.super = 'farmaonline';
   function showCfg(){
     $('cfgSuc').value = cfg.suc || '200';
@@ -1909,8 +1907,8 @@
 
   // ---------- Secciones: Juguetes y Deporte (cada una busca en sus tiendas) ----------
   const SECCIONES = {
-    juguetes: { tiendas: ['cebra', 'kinderland', 'fravega'], chips: ['LEGO', 'Barbie', 'Hot Wheels', 'Play-Doh', 'Nerf', 'Juegos de mesa', 'Peluches', 'Muñecas', 'Autos a control remoto', 'Pista de autos'] },
-    deporte: { tiendas: ['dexter', 'moov', 'stockcenter', 'sporting', 'grid', 'fravega'], chips: ['Zapatillas running', 'Nike Air Max', 'Adidas Samba', 'Botines', 'Pelota de fútbol', 'Camiseta Argentina', 'Bicicleta rodado 29', 'Bicicleta infantil', 'Mochila', 'Monopatín'] },
+    juguetes: { tiendas: ['cebra', 'kinderland'], chips: ['LEGO', 'Barbie', 'Hot Wheels', 'Play-Doh', 'Nerf', 'Juegos de mesa', 'Peluches', 'Muñecas', 'Autos a control remoto', 'Pista de autos'] },
+    deporte: { tiendas: ['dexter', 'moov', 'stockcenter', 'sporting', 'grid'], chips: ['Zapatillas running', 'Nike Air Max', 'Adidas Samba', 'Botines', 'Pelota de fútbol', 'Camiseta Argentina', 'Bicicleta rodado 29', 'Bicicleta infantil', 'Mochila', 'Monopatín'] },
   };
   let seccion = store.get('jyd-seccion', 'juguetes'); if (!SECCIONES[seccion]) seccion = 'juguetes';
   const tiendasSec = () => SECCIONES[seccion].tiendas.filter(k => SUPERS[k]);
@@ -3621,7 +3619,7 @@
   }
   async function nameForEan(ean){
     if (catalog[ean]) return catalog[ean].name;
-    for (const url of ['/api/vtex?tienda=cebra&ean=' + ean, '/api/vtex?tienda=fravega&ean=' + ean, '/api/vtex?tienda=sporting&ean=' + ean, '/api/vtex?tienda=grid&ean=' + ean]) {
+    for (const url of ['/api/vtex?tienda=cebra&ean=' + ean, '/api/vtex?tienda=sporting&ean=' + ean, '/api/vtex?tienda=grid&ean=' + ean]) {
       try { const r = await fetch(url); if (!r.ok) continue; const d = await r.json(); const p = (d.productos || []).find(x => x.exacto); if (p) return p.nombre; } catch(_) {}
     }
     return null;
@@ -3713,7 +3711,7 @@
   }
   const ofActual = () => ofRubros.find(x => x.id === ofRubro);
   // Tienda de las ofertas: Coto (todas sus ofertas) o Carrefour / Día (catálogo online ordenado por descuento)
-  const TIENDAS_OF = { cebra: 'Cebra', fravega: 'Frávega', sporting: 'Sporting', grid: 'Grid' };
+  const TIENDAS_OF = { cebra: 'Cebra', sporting: 'Sporting', grid: 'Grid' };
   let ofTienda = TIENDAS_OF[store.get('sale-tienda', 'farmaonline')] ? store.get('sale-tienda', 'farmaonline') : 'farmaonline';
   const ofNom = () => TIENDAS_OF[ofTienda];
   const ofUrlRubros = () => ofTienda === 'coto' ? '/api/coto-ofertas?rubros=1&sucursal=' + SUC_OF() : '/api/vtex-ofertas?tienda=' + ofTienda + '&rubros=1';
@@ -3937,7 +3935,7 @@
 
   // ---------- cuenta de Google (Supabase) ----------
   let sb = null, user = null, perfil = null, sessionUid = null, esAdmin = false, tieneSupers = true;
-  const SUPERS_MAIL = ['cebra', 'kinderland', 'fravega', 'dexter', 'moov', 'stockcenter', 'sporting', 'grid'];
+  const SUPERS_MAIL = ['cebra', 'kinderland', 'dexter', 'moov', 'stockcenter', 'sporting', 'grid'];
   async function initSupabase(){
     try {
       const c = await (await fetch('/api/config')).json();
@@ -4283,7 +4281,7 @@
     const sup = Array.isArray(p.supers) && p.supers.length ? p.supers : SUPERS_MAIL;
     $('supersBox').hidden = (p.modo || 'resumen') !== 'resumen';
     document.querySelectorAll('#supersSel input').forEach(c => { c.checked = sup.includes(c.value); c.disabled = c.checked && sup.length === 1; });
-    const nom = { cebra: 'Cebra', kinderland: 'Kinderland', fravega: 'Frávega', dexter: 'Dexter', moov: 'Moov', stockcenter: 'Stock Center', sporting: 'Sporting', grid: 'Grid' };
+    const nom = { cebra: 'Cebra', kinderland: 'Kinderland', dexter: 'Dexter', moov: 'Moov', stockcenter: 'Stock Center', sporting: 'Sporting', grid: 'Grid' };
     $('supersTxt').textContent = sup.length > 1 ? `Te llega un solo mail comparando ${sup.map(s => nom[s]).join(', ').replace(/, ([^,]*)$/, ' y $1')}: el total de tu lista en cada uno y el precio de cada producto, con el más barato marcado.` : `Te llegan los precios de ${nom[sup[0]]}, con las ofertas arriba.`;
     const g = store.get('sale-guardado', 0), n = lists.reduce((s, l) => s + l.items.length, 0);
     $('syncState').textContent = `${lists.length} ${lists.length === 1 ? 'lista' : 'listas'} con ${n} productos guardadas en tu cuenta`

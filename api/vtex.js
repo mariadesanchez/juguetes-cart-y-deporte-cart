@@ -7,7 +7,6 @@ const TIENDAS = {
   // Juguetes
   cebra:      { nombre: 'Cebra',        host: 'https://www.cebra.com.ar' },
   kinderland: { nombre: 'Kinderland',   host: 'https://www.kinderland.com.ar', shopify: true },
-  fravega:    { nombre: 'Frávega',      host: 'https://www.fravega.com', web: true },   // se lee del buscador de su web (lib/fravega.js)
   // Deporte
   dexter:     { nombre: 'Dexter',       host: 'https://www.dexter.com.ar', sfcc: 'Sites-Dexter-Site' },
   moov:       { nombre: 'Moov',         host: 'https://www.moov.com.ar', sfcc: 'Sites-Moov-Site' },
