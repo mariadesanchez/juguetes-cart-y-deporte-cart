@@ -266,7 +266,7 @@ async function handler(req, res) {
     if (!productos.length) { const r = await buscarEn(q, ean); productos = r.ps; buscadoPor = r.por; }
     // Con medida, también se busca con la medida puesta (la tienda devuelve primero los más grandes)
     if (medQ.length) {
-      try { const r2 = await buscarEn(qOriginal, ''); const ya = new Set(productos.map(p => p.link)); r2.ps.forEach(p => { if (!ya.has(p.link)) productos.push(p); }); } catch (_) { /* con lo que hay */ }
+      try { const r2 = await buscarEn(qOriginal, ''); const ya = new Set(productos.map(p => p.link)); r2.ps.forEach(p => { if (p.link && !ya.has(p.link)) { ya.add(p.link); productos.push(p); } }); } catch (_) { /* con lo que hay */ }
     }
     if ((ean || buscaModelo) && q) marcarPorModelo(productos, q);
     if (buscadoPor === 'nombre' && productos.some(p => p.por_modelo)) buscadoPor = 'modelo';
