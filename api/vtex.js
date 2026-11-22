@@ -15,6 +15,7 @@ const TIENDAS = {
   sporting:   { nombre: 'Sporting',     host: 'https://www.sporting.com.ar' },
   grid:       { nombre: 'Grid',         host: 'https://www.grid.com.ar' },
 };
+const rel = require('../lib/relevancia');
 const magento = require('../lib/magento.js');
 const otras = require('../lib/otras.js');
 const t2 = require('../lib/tiendas2.js');
@@ -187,7 +188,7 @@ function mapear(products, ean) {
       sin_stock: sinStock,
       rubro: rubroVtex(p),
       link: p.link || '',
-      modelo: refModelo(p.productReference),
+      modelo: refModelo(rel.modeloLimpio(p.productReference)),
       sku: String(item.itemId || ''),
       seller: String((seller && seller.sellerId) || '1'),
     });
@@ -241,6 +242,8 @@ async function handler(req, res) {
     if (!productos.length) { const r = await buscarEn(q, ean); productos = r.ps; buscadoPor = r.por; }
     if ((ean || buscaModelo) && q) marcarPorModelo(productos, q);
     if (buscadoPor === 'nombre' && productos.some(p => p.por_modelo)) buscadoPor = 'modelo';
+    // Búsqueda por nombre: se sacan los resultados que no tienen que ver (iMacs al buscar "horno eléctrico")
+    if (!ean && !buscaModelo && !productos.some(p => p.exacto)) productos = rel.relevantes(productos, q);
     productos.sort((a, b) => (Number(b.exacto) - Number(a.exacto)) || (Number(a.sin_stock) - Number(b.sin_stock)));
     res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
     res.statusCode = 200;
