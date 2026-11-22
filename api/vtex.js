@@ -7,7 +7,7 @@ const TIENDAS = {
   // Juguetes
   cebra:      { nombre: 'Cebra',        host: 'https://www.cebra.com.ar' },
   kinderland: { nombre: 'Kinderland',   host: 'https://www.kinderland.com.ar', shopify: true },
-  fravega:    { nombre: 'Frávega',      host: 'https://www.fravega.com' },
+  fravega:    { nombre: 'Frávega',      host: 'https://www.fravega.com', web: true },   // se lee del buscador de su web (lib/fravega.js)
   // Deporte
   dexter:     { nombre: 'Dexter',       host: 'https://www.dexter.com.ar', sfcc: 'Sites-Dexter-Site' },
   moov:       { nombre: 'Moov',         host: 'https://www.moov.com.ar', sfcc: 'Sites-Moov-Site' },
@@ -16,6 +16,7 @@ const TIENDAS = {
   grid:       { nombre: 'Grid',         host: 'https://www.grid.com.ar' },
 };
 const rel = require('../lib/relevancia');
+const fravegaWeb = require('../lib/fravega');
 const magento = require('../lib/magento.js');
 const otras = require('../lib/otras.js');
 const t2 = require('../lib/tiendas2.js');
@@ -241,6 +242,10 @@ async function handler(req, res) {
   try {
     // Una búsqueda en la tienda (por código de barras si hay, y si no por texto)
     const buscarEn = async (texto, conEan) => {
+      if (tienda.web) {
+        // Frávega: buscador de su web; si no responde, sigue con el catálogo VTEX de abajo
+        try { return { ps: await fravegaWeb.buscar({ q: texto || conEan, limite }), por: 'nombre' }; } catch (_) { /* catálogo viejo */ }
+      }
       if (tienda.magento) return { ps: await magento.buscar(tienda.host, { q: texto, limite }), por: 'nombre' };
       if (tienda.prestashop) { const ps = await otras.prestashop(tienda.host, { ean: conEan, q: texto, limite }); return { ps, por: ps.some(p => p.exacto) ? 'codigo' : 'nombre' }; }
       if (tienda.shopify) return { ps: await t2.shopify(tienda.host, { q: texto, limite }), por: 'nombre' };
