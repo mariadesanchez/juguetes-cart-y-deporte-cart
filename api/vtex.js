@@ -187,7 +187,7 @@ function mapear(products, ean) {
       sin_stock: sinStock,
       rubro: rubroVtex(p),
       link: p.link || '',
-      modelo: String(p.productReference || ''),
+      modelo: refModelo(p.productReference),
       sku: String(item.itemId || ''),
       seller: String((seller && seller.sellerId) || '1'),
     });
@@ -249,6 +249,13 @@ async function handler(req, res) {
     res.statusCode = 502;
     return res.end(JSON.stringify({ ok: false, error: 'No se pudo consultar a ' + tienda.nombre }));
   }
+}
+
+// Sporting escribe el código Nike sin guion y con un sufijo (HJ8485001-000 = HJ8485-001)
+function refModelo(r) {
+  const t = String(r || '').trim().toUpperCase();
+  const m = t.match(/^([A-Z]{2}\d{4})(\d{3})-0+$/);
+  return m ? m[1] + '-' + m[2] : t;
 }
 
 module.exports = handler;
