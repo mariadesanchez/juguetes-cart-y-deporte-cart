@@ -4,5 +4,15 @@
     "api/vtex-ofertas.js": {
       "maxDuration": 30
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/juguetes",
+      "destination": "/"
+    },
+    {
+      "source": "/indumentaria",
+      "destination": "/"
+    }
+  ]
 }

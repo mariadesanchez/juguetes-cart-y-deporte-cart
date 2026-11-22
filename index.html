@@ -9,10 +9,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;600;700;800&family=Fredoka:wght@700&display=swap" rel="stylesheet">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Juguetes y Deporte Cart">
-<meta name="application-name" content="Juguetes y Deporte Cart">
+<meta name="apple-mobile-web-app-title" content="Juguetes e Indumentaria Cart">
+<meta name="application-name" content="Juguetes e Indumentaria Cart">
 <meta name="description" content="Juguetes, zapatillas, ropa deportiva y bicis: comparación de precios entre 7 tiendas, ofertas y tus listas con el mail diario de precios.">
-<title>Juguetes y Deporte Cart</title>
+<title>Juguetes e Indumentaria Cart</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -330,6 +330,7 @@
   .scard .srow.worst{color:var(--danger)}
   .scard .sacts{grid-column:1/-1;display:flex;gap:8px}
   /* ---------- Secciones Juguetes / Deporte ---------- */
+  .secs[hidden]{display:none!important}
   .secs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 8px}
   .secs button{appearance:none;border:2px solid var(--line);border-bottom-width:5px;background:var(--card);color:var(--ink);border-radius:16px;padding:12px 10px;font:inherit;font-weight:800;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
   .secs button span{font-size:22px}
@@ -747,7 +748,7 @@
 <header class="hero" id="hero" data-view="inicio">
   <div class="hero-in">
     <div class="brand"><span class="badge" id="netBadge" hidden>Sin conexión</span></div>
-    <svg class="logo" viewBox="-6 -6 392 236" role="img" aria-label="Juguetes y Deporte Cart">
+    <svg class="logo" viewBox="-6 -6 392 236" role="img" aria-label="Juguetes e Indumentaria Cart">
       <defs>
         <filter id="inflate" x="-12%" y="-15%" width="124%" height="145%" color-interpolation-filters="sRGB">
           <feGaussianBlur in="SourceAlpha" stdDeviation="7" result="bump"/>
@@ -1072,7 +1073,7 @@
           <button type="button" class="btn" id="gsCopyCode" style="margin-top:6px">Copiar código del script</button></li>
         <li>Guardá, elegí la función <b>configurar</b> arriba y tocá <b>Ejecutar</b>. Aceptá los permisos que pide Google (es tu propio script).</li>
         <li>Acá en la app, en <b>Listas</b>, tocá <b>Copiar para Google Sheets</b> y pegalo en la hoja <b>Lista</b>, celda A2.</li>
-        <li>Listo. Para probar ya: menú <b>Juguetes y Deporte Cart › Registrar precios ahora</b>. En la hoja <b>Config</b> elegís tienda y hora.</li>
+        <li>Listo. Para probar ya: menú <b>Juguetes e Indumentaria Cart › Registrar precios ahora</b>. En la hoja <b>Config</b> elegís tienda y hora.</li>
       </ol>
       <div class="gs-auto">
         <b>Envío automático de tu lista</b>
@@ -1156,7 +1157,7 @@
   <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="admTitle">
     <div class="sheet-grab"></div>
     <h2><span id="admTitle">Usuarios autorizados</span><button type="button" class="xbtn" data-adm-close aria-label="Cerrar">✕</button></h2>
-    <p class="hint" style="margin:0 0 12px">Solo los mails de esta lista pueden ingresar a Juguetes y Deporte Cart. Esto lo ves solo vos.</p>
+    <p class="hint" style="margin:0 0 12px">Solo los mails de esta lista pueden ingresar a Juguetes e Indumentaria Cart. Esto lo ves solo vos.</p>
     <form id="admForm" class="adm-form" autocomplete="off">
       <input type="email" id="admEmail" placeholder="nombre@gmail.com" required aria-label="Gmail a autorizar">
       <input type="text" id="admNombre" placeholder="Nombre (opcional)" aria-label="Nombre">
@@ -1183,6 +1184,36 @@
 
 <script src="/vendor/zxing-reader.js"></script>
 <script>
+  // ---------- Juguetes Cart (/juguetes) e Indumentaria Cart (/indumentaria): dos secciones con su propio nombre, logo y colores ----------
+  const SECCION_APP = (/^\/indumentaria\/?$/.test(location.pathname) || new URLSearchParams(location.search).get('seccion') === 'deporte') ? 'deporte' : 'juguetes';
+  (() => {
+    const ind = SECCION_APP === 'deporte';
+    // La dirección vieja (/?seccion=...) pasa a /juguetes o /indumentaria
+    if (!/^\/(juguetes|indumentaria)\/?$/.test(location.pathname)) { try { const u = new URL(location.href); u.searchParams.delete('seccion'); history.replaceState(null, '', (ind ? '/indumentaria' : '/juguetes') + u.search + u.hash); } catch(_) {} }
+    document.title = ind ? 'Indumentaria Cart' : 'Juguetes Cart';
+    document.body.classList.add(ind ? 'app-indumentaria' : 'app-juguetes');
+    const tc = document.querySelector('meta[name=theme-color]'); if (tc) tc.content = ind ? '#0F9F8F' : '#FF9A1F';
+    const lg = document.querySelector('#hero .logo');
+    if (lg) {
+      lg.setAttribute('aria-label', document.title);
+      if (ind) { const st = lg.querySelectorAll('#celeste stop'); ['#D2FBF5', '#2FD3C0', '#0C8F81'].forEach((c, k) => st[k] && st[k].setAttribute('stop-color', c)); }
+      const tx = lg.querySelectorAll('text');
+      const letras = (t, w, dx, dy) => { t.textContent = ''; [...w].forEach((ch, k) => { const sp = document.createElementNS('http://www.w3.org/2000/svg', 'tspan'); sp.textContent = ch; if (k) { sp.setAttribute('dx', dx); sp.setAttribute('dy', dy[k % dy.length]); } t.appendChild(sp); }); };
+      if (tx[0]) {
+        letras(tx[0], ind ? 'Indumentaria' : 'Juguetes', 3, [-4, 6, -7, 4]);
+        tx[0].setAttribute('rotate', '-7 4 -5 6 -3 5 -4 3 -5 4 -3 5');
+        if (ind) { tx[0].setAttribute('font-size', '66'); tx[0].setAttribute('textLength', '372'); tx[0].setAttribute('lengthAdjust', 'spacingAndGlyphs'); tx[0].setAttribute('x', '0'); tx[0].setAttribute('y', '88'); }
+      }
+      if (tx[1]) { letras(tx[1], 'Cart', 6, [5, -6, 4, -5]); tx[1].setAttribute('x', '96'); tx[1].setAttribute('font-size', '96'); tx[1].setAttribute('rotate', '6 -4 5 -6'); }
+    }
+    const h1 = document.querySelector('#hero h1'); if (h1) h1.textContent = ind ? 'Tu ropa deportiva, al mejor precio' : 'Tus juguetes, al mejor precio';
+    const run = document.querySelector('.ticker .run');
+    if (run) {
+      const fr = ind ? ['👟 Zapatillas, botines y ropa deportiva al mejor precio', '🏷️ Dexter, Moov, Stock Center, Sporting y Grid', '🔎 El mismo modelo en todas las tiendas', '💳 Precio de contado y cuotas sin interés', '📧 Tu lista con los precios de hoy, en tu mail']
+                     : ['🎄 Regalos de Navidad al mejor precio', '🧸 LEGO, Barbie, Hot Wheels, juegos de mesa y más', '🏷️ Cebra y Kinderland', '💳 Precio de contado y cuotas sin interés', '📧 Tu lista con los precios de hoy, en tu mail'];
+      run.innerHTML = ''; fr.concat(fr).forEach(t => { const sp = document.createElement('span'); sp.textContent = t; run.appendChild(sp); });
+    }
+  })();
 (function(){
   const $ = id => document.getElementById(id);
   const fmt = n => '$ ' + (Math.round(n*100)/100).toLocaleString('es-AR',{minimumFractionDigits: (Math.round(n*100)%100) ? 2 : 0, maximumFractionDigits:2});
@@ -1378,8 +1409,8 @@
   } catch(e) {}
 
   // ---------- pasar el carrito a la tienda para pagar ----------
-  // Tiendas de la otra app (Super Cart / Juguetes y Deporte Cart): también pueden quedar en el carrito más conveniente
-  const OTRAS_TIENDAS = {};   // Juguetes y Deporte Cart no se cruza con Super ni con Perfu
+  // Tiendas de la otra app (Super Cart / Juguetes e Indumentaria Cart): también pueden quedar en el carrito más conveniente
+  const OTRAS_TIENDAS = {};   // Juguetes e Indumentaria Cart no se cruza con Super ni con Perfu
   const nomT = k => SUPERS[k] || OTRAS_TIENDAS[k] || k;
   const superKey = () => Object.fromEntries(Object.entries({ ...OTRAS_TIENDAS, ...SUPERS }).map(([k, v]) => [v, k]));
   // Estas tiendas no aceptan un carrito armado desde otra página: se muestran los productos con su enlace
@@ -1908,9 +1939,9 @@
   // ---------- Secciones: Juguetes y Deporte (cada una busca en sus tiendas) ----------
   const SECCIONES = {
     juguetes: { tiendas: ['cebra', 'kinderland'], chips: ['LEGO', 'Barbie', 'Hot Wheels', 'Play-Doh', 'Nerf', 'Juegos de mesa', 'Peluches', 'Muñecas', 'Autos a control remoto', 'Pista de autos'] },
-    deporte: { tiendas: ['dexter', 'moov', 'stockcenter', 'sporting', 'grid'], chips: ['Zapatillas running', 'Nike Air Max', 'Adidas Samba', 'Botines', 'Pelota de fútbol', 'Camiseta Argentina', 'Bicicleta rodado 29', 'Bicicleta infantil', 'Mochila', 'Monopatín'] },
+    deporte: { tiendas: ['dexter', 'moov', 'stockcenter', 'sporting', 'grid'], chips: ['Zapatillas running', 'Nike Air Max', 'Adidas Samba', 'Botines', 'Camiseta Argentina', 'Buzo', 'Campera', 'Calza', 'Short', 'Medias', 'Mochila'] },
   };
-  let seccion = store.get('jyd-seccion', 'juguetes'); if (!SECCIONES[seccion]) seccion = 'juguetes';
+  let seccion = SECCION_APP;   // cada sección es una app aparte: no se cambia desde adentro
   const tiendasSec = () => SECCIONES[seccion].tiendas.filter(k => SUPERS[k]);
   // Tiendas para comparar un producto de una lista: las de la sección de la tienda donde se eligió
   function tiendasPara(it){
@@ -1922,18 +1953,9 @@
     $('secs').querySelectorAll('button').forEach(b => { const on = b.dataset.sec === seccion; b.classList.toggle('on', on); b.setAttribute('aria-selected', String(on)); });
     $('secChips').innerHTML = '';
     SECCIONES[seccion].chips.forEach(c => { const b = document.createElement('button'); b.type = 'button'; b.textContent = c; b.dataset.q = c; $('secChips').appendChild(b); });
-    $('cotoQ').placeholder = seccion === 'juguetes' ? 'Ej: LEGO 31147, Barbie, Hot Wheels' : 'Ej: zapatillas Nike, botines, bicicleta';
-    // La etiqueta "Estás en" y la dirección siguen a la sección
-    if (window.tusCartsNav) window.tusCartsNav.actual('jyd-' + seccion);
-    try { const u = new URL(location.href); u.searchParams.set('seccion', seccion); history.replaceState(null, '', u.pathname + u.search + u.hash); } catch(_) {}
+    $('cotoQ').placeholder = seccion === 'juguetes' ? 'Ej: LEGO 31147, Barbie, Hot Wheels' : 'Ej: zapatillas Nike Air Max, botines, buzo';
   }
-  // El menú lateral cambia de sección sin recargar
-  window.tusCartsSeccion = sec => {
-    if (!SECCIONES[sec] || sec === seccion) return;
-    seccion = sec; store.set('jyd-seccion', seccion); pintarSecciones();
-    const v = $('cotoQ').value.trim(); if (v) $('cotoForm').requestSubmit();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  $('secs').hidden = true;   // ya no hay pestañas: Juguetes e Indumentaria son secciones separadas (menú lateral)
   $('secs').addEventListener('click', e => {
     const b = e.target.closest('button[data-sec]'); if (!b || b.dataset.sec === seccion) return;
     seccion = b.dataset.sec; store.set('jyd-seccion', seccion); pintarSecciones();
@@ -1945,7 +1967,6 @@
     $('cotoQ').value = b.dataset.q; $('cotoForm').requestSubmit();
     setTimeout(() => $('cotoCard').scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
   });
-  { const q0 = new URLSearchParams(location.search).get('seccion'); if (SECCIONES[q0]) { seccion = q0; store.set('jyd-seccion', seccion); } }
   pintarSecciones();
 
   function renderCoto(){
@@ -2568,7 +2589,7 @@
     boton('+ Nueva lista «' + nueva + '»', 'Se crea en ' + OTRA_APP.nombre, () => pasar(null, nueva));
     abrirModal({ titulo: 'Pasar a ' + OTRA_APP.nombre, sub: (it.name || 'Este producto') + ' sale ' + fmt(otro.u * it.qty) + ' en ' + otro.p.tienda + '. Elegí a qué lista va; ' + (quitar ? (quitar.name || 'el pack') + ' sale' : 'sale') + ' de «' + l.name + '».', cuerpo, acciones: [] });
   }
-  // Juguetes y Deporte Cart no se cruza con otras apps ni busca packs (no aplica a electro)
+  // Juguetes e Indumentaria Cart no se cruza con otras apps ni busca packs (no aplica a electro)
   const CRUCE = false;
   function pintarCruce(l, box, combo, alPasar, fuera){
     if (!CRUCE) return;
@@ -2805,7 +2826,7 @@
         if (!(k in SUPERS) && !sepPuesto) {
           sepPuesto = true;
           const sp = document.createElement('div'); sp.className = 'grp-sep';
-          sp.textContent = (SUPERS.coto ? '🎁 En juguetes y deporte (precios de Juguetes y Deporte Cart)' : '🛒 En el súper (precios de Super Cart)');
+          sp.textContent = (SUPERS.coto ? '🎁 En juguetes y deporte (precios de Juguetes e Indumentaria Cart)' : '🛒 En el súper (precios de Super Cart)');
           o.appendChild(sp);
         }
         const vivas = g.lines.filter(x => !x.tachado);
@@ -3548,7 +3569,7 @@
     loadGsCode().then(x => copyText(x, 'Código copiado: pegalo en Apps Script')).catch(() => toast('No se pudo traer el código. Probá de nuevo con internet.'));
   });
   // ---------- compartir la lista tal cual se ve: link a /compartida (con fotos y precios) por WhatsApp, mail o lo que sea ----------
-  const APP_KEY = 'jyd', APP_NOM = 'Juguetes y Deporte Cart';
+  const APP_KEY = 'jyd', APP_NOM = 'Juguetes e Indumentaria Cart';
   const compartidas = new Map();
   function fotoLista(l){
     const st = it => { const x = itemStatus(it); return x === 'nostock' ? 'sin stock online' : x === 'notfound' ? 'no está online' : ''; };
@@ -3614,7 +3635,7 @@
     const n = l.items.filter(i => i.ean).length;
     a.setAttribute('aria-disabled', String(!n));
     if (!n) { a.href = '#'; return; }
-    const text = `Mi lista “${l.name}” en Juguetes y Deporte Cart (${n} productos): ${shortLink(l)}`;
+    const text = `Mi lista “${l.name}” en Juguetes e Indumentaria Cart (${n} productos): ${shortLink(l)}`;
     a.href = 'https://wa.me/?text=' + encodeURIComponent(text);
   }
   async function nameForEan(ean){
@@ -3859,7 +3880,7 @@
     });
     if (hasOff) {
       const wa = document.createElement('a'); wa.className = 'of-wa'; wa.target = '_blank'; wa.rel = 'noopener'; wa.setAttribute('aria-label', 'Compartir por WhatsApp');
-      wa.href = 'https://wa.me/?text=' + encodeURIComponent(`Oferta en ${ofNom()}: ${o.producto} a ${fmt(o.oferta)} (-${pct}%, antes ${fmt(o.regular)}). Visto en Juguetes y Deporte Cart: ${APP_URL}`);
+      wa.href = 'https://wa.me/?text=' + encodeURIComponent(`Oferta en ${ofNom()}: ${o.producto} a ${fmt(o.oferta)} (-${pct}%, antes ${fmt(o.regular)}). Visto en Juguetes e Indumentaria Cart: ${APP_URL}`);
       wa.innerHTML = '<svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3.2A12.7 12.7 0 0 0 5.1 22.4L3.3 28.8l6.6-1.7A12.7 12.7 0 1 0 16 3.2zm5.8 15.3c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.7l.5-.6.3-.5c.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.4c.2.2 2.4 3.6 5.7 5 .8.4 1.4.6 1.9.7.8.3 1.5.2 2.1.1.6-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg>';
       el.querySelector('.acts').appendChild(wa);
     }
@@ -4042,7 +4063,7 @@
   const GATE_BTN = $('gateLogin').innerHTML;
   function gateBusy(on){ const b = $('gateLogin'); b.disabled = on; b.innerHTML = on ? '<span class="gate-spin" aria-hidden="true"></span><span>Ingresando…</span>' : GATE_BTN; if (!on && gisListo) cubrir(b); }
   $('gateLogin').addEventListener('click', () => { gateBusy(true); $('gateMsg').hidden = true; login().finally(() => setTimeout(() => gateBusy(false), 6000)); });
-  const NO_HAB = 'no tiene acceso a Juguetes y Deporte Cart. Pedile acceso a quien te compartió la app y, cuando te habilite, volvé a ingresar.';
+  const NO_HAB = 'no tiene acceso a Juguetes e Indumentaria Cart. Pedile acceso a quien te compartió la app y, cuando te habilite, volvé a ingresar.';
   async function noAutorizado(email){
     try { await sb.auth.signOut(); } catch (_) {}
     user = null; perfil = null; sessionUid = null; esAdmin = false; renderAdminBtns(); renderWho(); renderAcct();
@@ -4060,7 +4081,7 @@
     return true;
   }
   async function cargarCuenta(){
-    // Preferencias del mail de Juguetes y Deporte Cart: tabla jyd_perfiles (la primera vez se crea la fila)
+    // Preferencias del mail de Juguetes e Indumentaria Cart: tabla jyd_perfiles (la primera vez se crea la fila)
     let { data: pf } = await sb.from('jyd_perfiles').select('avisos,modo,supers').eq('id', user.id).maybeSingle();
     if (!pf) { const r = await sb.from('jyd_perfiles').insert({ id: user.id }).select('avisos,modo,supers').maybeSingle(); pf = r.data; }
     perfil = pf || { email: user.email, avisos: true, modo: 'resumen' };
@@ -4173,7 +4194,7 @@
   // Login / logout
   async function login(){
     if (!sb) { $('loginErr').textContent = 'El ingreso todavía no está disponible.'; $('loginErr').hidden = false; go('cuenta'); return; }
-    const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.origin + '/#listas' } });
+    const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.origin + (SECCION_APP === 'deporte' ? '/indumentaria' : '/juguetes') + '#listas' } });
     if (error) { $('loginErr').textContent = 'No se pudo ingresar. Probá de nuevo.'; $('loginErr').hidden = false; }
   }
   // Ingreso con el botón de Google dentro de la página: Google muestra la dirección de la app
@@ -4302,16 +4323,16 @@
     if (r.checked) guardarPerfil({ modo: r.value }, r.value === 'resumen' ? 'Listo: te mandamos el resumen todos los días' : 'Listo: solo te escribimos cuando algo entra en oferta');
   }));
 
-  // ---------- links especiales: baja del mail, links viejos e importación desde Juguetes y Deporte Cart ----------
+  // ---------- links especiales: baja del mail, links viejos e importación desde Juguetes e Indumentaria Cart ----------
   function mensaje(titulo, texto){ if (gated()) { gateMsg(titulo, texto); return; } $('msgTitle').textContent = titulo; $('msgText').textContent = texto; setOff('msgCard', false); go('cuenta'); }
   async function handleLinks(){
     const sp = new URLSearchParams(location.search);
     const baja = sp.get('baja'), viejo = sp.get('confirmar') || sp.get('copia');
     if (!baja && !viejo) return false;
     history.replaceState(null, '', location.pathname + '#cuenta');
-    if (viejo) { mensaje('Juguetes y Deporte Cart cambió', 'Ahora tus listas quedan guardadas en tu cuenta. Tocá “Ingresar”.'); return true; }
+    if (viejo) { mensaje('Juguetes e Indumentaria Cart cambió', 'Ahora tus listas quedan guardadas en tu cuenta. Tocá “Ingresar”.'); return true; }
     if (!/^[0-9a-f-]{36}$/i.test(baja)) { mensaje('Ese link es de la versión anterior', 'Ingresá y desactivá “Recibir el mail diario” en Mi cuenta.'); return true; }
-    if (!confirm('¿Dejar de recibir el mail diario de Juguetes y Deporte Cart?')) { go('cuenta'); return true; }
+    if (!confirm('¿Dejar de recibir el mail diario de Juguetes e Indumentaria Cart?')) { go('cuenta'); return true; }
     let ok = false;
     if (sb) { const { data, error } = await sb.rpc('jyd_baja_avisos', { token: baja }); ok = !error && !!data; if (ok && perfil) perfil.avisos = false; }
     mensaje(ok ? 'Listo' : 'No pudimos darte de baja', ok ? 'No te vamos a mandar más mails. Si querés volver a recibirlos, activalo en tu cuenta.' : 'Ingresá y desactivá “Recibir el mail diario” en Mi cuenta.');
@@ -4336,7 +4357,7 @@
       if (d.planilla && d.planilla.url && !store.get('super-planilla', {}).url) store.set('super-planilla', d.planilla);
       store.set('super-listas', lists);
       history.replaceState(null, '', location.pathname + '#listas');
-      setTimeout(() => toast(n ? `Trajimos ${n === 1 ? 'tu lista' : 'tus ' + n + ' listas'} de Juguetes y Deporte Cart` : 'Listo'), 600);
+      setTimeout(() => toast(n ? `Trajimos ${n === 1 ? 'tu lista' : 'tus ' + n + ' listas'} de Juguetes e Indumentaria Cart` : 'Listo'), 600);
       return true;
     } catch (_) { history.replaceState(null, '', location.pathname + '#ofertas'); return false; }
   }
