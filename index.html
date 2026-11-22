@@ -1922,7 +1922,17 @@
     $('secChips').innerHTML = '';
     SECCIONES[seccion].chips.forEach(c => { const b = document.createElement('button'); b.type = 'button'; b.textContent = c; b.dataset.q = c; $('secChips').appendChild(b); });
     $('cotoQ').placeholder = seccion === 'juguetes' ? 'Ej: LEGO 31147, Barbie, Hot Wheels' : 'Ej: zapatillas Nike, botines, bicicleta';
+    // La etiqueta "Estás en" y la dirección siguen a la sección
+    if (window.tusCartsNav) window.tusCartsNav.actual('jyd-' + seccion);
+    try { const u = new URL(location.href); u.searchParams.set('seccion', seccion); history.replaceState(null, '', u.pathname + u.search + u.hash); } catch(_) {}
   }
+  // El menú lateral cambia de sección sin recargar
+  window.tusCartsSeccion = sec => {
+    if (!SECCIONES[sec] || sec === seccion) return;
+    seccion = sec; store.set('jyd-seccion', seccion); pintarSecciones();
+    const v = $('cotoQ').value.trim(); if (v) $('cotoForm').requestSubmit();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
   $('secs').addEventListener('click', e => {
     const b = e.target.closest('button[data-sec]'); if (!b || b.dataset.sec === seccion) return;
     seccion = b.dataset.sec; store.set('jyd-seccion', seccion); pintarSecciones();
@@ -4376,5 +4386,6 @@
   initSupabase().then(() => { convertirListaVieja(); return errorDeIngreso() || handleLinks(); });
 })();
 </script>
+<script src="/nav-carts.js"></script>
 </body>
 </html>
