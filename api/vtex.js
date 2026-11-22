@@ -203,6 +203,7 @@ function mapear(products, ean) {
       link: linkTienda(p, item),
       modelo: refModelo(rel.modeloLimpio(p.productReference)),
       medidas: rel.medidas(rel.textoMedidas(p)),
+      categorias: (p.categories || []).join(' '),   // para saber si es lo buscado aunque no lo diga el nombre ("Horno Longvie HE-6900G" está en Hornos eléctricos)
       sku: String(item.itemId || ''),
       seller: String((seller && seller.sellerId) || '1'),
     });
@@ -272,7 +273,7 @@ async function handler(req, res) {
     // Búsqueda por nombre: se sacan los resultados que no tienen que ver (iMacs al buscar "horno eléctrico")
     if (!ean && !buscaModelo && !productos.some(p => p.exacto)) productos = rel.relevantes(productos, q);
     if (medQ.length) productos = rel.conMedidas(productos, medQ).slice(0, limitePedido);
-    productos.forEach(p => { delete p.medidas; });
+    productos.forEach(p => { delete p.medidas; delete p.categorias; });
     productos.sort((a, b) => (Number(b.exacto) - Number(a.exacto)) || (Number(a.sin_stock) - Number(b.sin_stock)));
     res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
     res.statusCode = 200;
