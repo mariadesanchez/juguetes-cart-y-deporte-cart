@@ -7,6 +7,7 @@ const TIENDAS = {
   // Juguetes
   cebra:      { nombre: 'Cebra',        host: 'https://www.cebra.com.ar' },
   kinderland: { nombre: 'Kinderland',   host: 'https://www.kinderland.com.ar', shopify: true },
+  brickstore: { nombre: 'Brickstore',   host: 'https://www.brickstore.com.ar', tiendanube: true, marca: 'LEGO' },   // tienda oficial de LEGO en Argentina
   // Deporte
   dexter:     { nombre: 'Dexter',       host: 'https://www.dexter.com.ar', sfcc: 'Sites-Dexter-Site' },
   moov:       { nombre: 'Moov',         host: 'https://www.moov.com.ar', sfcc: 'Sites-Moov-Site' },
@@ -15,6 +16,7 @@ const TIENDAS = {
   grid:       { nombre: 'Grid',         host: 'https://www.grid.com.ar' },
 };
 const rel = require('../lib/relevancia');
+const tn = require('../lib/tiendanube');
 const fravegaWeb = require('../lib/fravega');
 const magento = require('../lib/magento.js');
 const otras = require('../lib/otras.js');
@@ -248,6 +250,7 @@ async function handler(req, res) {
       }
       if (tienda.magento) return { ps: await magento.buscar(tienda.host, { q: texto, limite }), por: 'nombre' };
       if (tienda.prestashop) { const ps = await otras.prestashop(tienda.host, { ean: conEan, q: texto, limite }); return { ps, por: ps.some(p => p.exacto) ? 'codigo' : 'nombre' }; }
+      if (tienda.tiendanube) return { ps: await tn.tiendanube(tienda.host, { q: texto || conEan, limite }, { marca: tienda.marca }), por: 'nombre' };
       if (tienda.shopify) return { ps: await t2.shopify(tienda.host, { q: texto, limite }), por: 'nombre' };
       if (tienda.sfcc) return { ps: await t2.sfcc(tienda.host, tienda.sfcc, { q: texto, limite }), por: 'nombre' };
       if (tienda.odoo) return { ps: await otras.odoo(tienda.host, { q: texto, limite }), por: 'nombre' };

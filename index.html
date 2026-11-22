@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Juguetes e Indumentaria Cart">
 <meta name="application-name" content="Juguetes e Indumentaria Cart">
-<meta name="description" content="Juguetes, zapatillas, ropa deportiva y bicis: comparación de precios entre 7 tiendas, ofertas y tus listas con el mail diario de precios.">
+<meta name="description" content="Juguetes, zapatillas, ropa deportiva y bicis: comparación de precios entre 8 tiendas, ofertas y tus listas con el mail diario de precios.">
 <title>Juguetes e Indumentaria Cart</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async></script>
@@ -954,6 +954,7 @@
     <div class="seg" id="superSel" role="tablist" aria-label="Tienda" style="margin-top:12px" hidden>
       <button type="button" role="tab" data-super="cebra">Cebra</button>
       <button type="button" role="tab" data-super="kinderland">Kinderland</button>
+      <button type="button" role="tab" data-super="brickstore">Brickstore (LEGO)</button>
       <button type="button" role="tab" data-super="dexter">Dexter</button>
       <button type="button" role="tab" data-super="moov">Moov</button>
       <button type="button" role="tab" data-super="stockcenter">Stock Center</button>
@@ -1058,6 +1059,7 @@
         <div class="ss-supers" id="supersSel">
           <label><input type="checkbox" value="cebra"><span>Cebra</span></label>
           <label><input type="checkbox" value="kinderland"><span>Kinderland</span></label>
+          <label><input type="checkbox" value="brickstore"><span>Brickstore (LEGO)</span></label>
           <label><input type="checkbox" value="dexter"><span>Dexter</span></label>
           <label><input type="checkbox" value="moov"><span>Moov</span></label>
           <label><input type="checkbox" value="stockcenter"><span>Stock Center</span></label>
@@ -1231,7 +1233,7 @@
     const run = document.querySelector('.ticker .run');
     if (run) {
       const fr = ind ? ['👟 Zapatillas, botines y ropa deportiva al mejor precio', '🏷️ Dexter, Moov, Stock Center, Sporting y Grid', '🔎 El mismo modelo en todas las tiendas', '💳 Precio de contado y cuotas sin interés', '📧 Tu lista con los precios de hoy, en tu mail']
-                     : ['🎄 Regalos de Navidad al mejor precio', '🧸 LEGO, Barbie, Hot Wheels, juegos de mesa y más', '🏷️ Cebra y Kinderland', '💳 Precio de contado y cuotas sin interés', '📧 Tu lista con los precios de hoy, en tu mail'];
+                     : ['🎄 Regalos de Navidad al mejor precio', '🧸 LEGO, Barbie, Hot Wheels, juegos de mesa y más', '🏷️ Cebra, Kinderland y Brickstore, la tienda oficial de LEGO', '💳 Precio de contado y cuotas sin interés', '📧 Tu lista con los precios de hoy, en tu mail'];
       run.innerHTML = ''; fr.concat(fr).forEach(t => { const sp = document.createElement('span'); sp.textContent = t; run.appendChild(sp); });
     }
   })();
@@ -1435,10 +1437,10 @@
   const nomT = k => SUPERS[k] || OTRAS_TIENDAS[k] || k;
   const superKey = () => Object.fromEntries(Object.entries({ ...OTRAS_TIENDAS, ...SUPERS }).map(([k, v]) => [v, k]));
   // Estas tiendas no aceptan un carrito armado desde otra página: se muestran los productos con su enlace
-  const SIN_CARRO = { kinderland: 1, dexter: 1, moov: 1, stockcenter: 1 };
+  const SIN_CARRO = { brickstore: 1, kinderland: 1, dexter: 1, moov: 1, stockcenter: 1 };
   // Cargan el carrito pero después muestran su portada: hay que tocar Carrito
   const VA_A_PORTADA = {};
-  const TIENDA_HOST = { cebra: 'https://www.cebra.com.ar', kinderland: 'https://www.kinderland.com.ar', fravega: 'https://www.fravega.com', dexter: 'https://www.dexter.com.ar', moov: 'https://www.moov.com.ar', stockcenter: 'https://www.stockcenter.com.ar', sporting: 'https://www.sporting.com.ar', grid: 'https://www.grid.com.ar' };
+  const TIENDA_HOST = { brickstore: 'https://www.brickstore.com.ar', cebra: 'https://www.cebra.com.ar', kinderland: 'https://www.kinderland.com.ar', fravega: 'https://www.fravega.com', dexter: 'https://www.dexter.com.ar', moov: 'https://www.moov.com.ar', stockcenter: 'https://www.stockcenter.com.ar', sporting: 'https://www.sporting.com.ar', grid: 'https://www.grid.com.ar' };
   function renderBuy(groups){
     const bx = $('buyBox'); bx.innerHTML = '';
     const SUPER_KEY = superKey();
@@ -1470,7 +1472,7 @@
     d.innerHTML = '<b></b>'; d.querySelector('b').textContent = titulo;
     items.forEach(it => {
       const a = document.createElement('a'); a.target = '_blank'; a.rel = 'noopener';
-      a.href = it.link || (TIENDA_HOST[k] + '/' + (k === 'kinderland' || k === 'dexter' || k === 'moov' || k === 'stockcenter' ? 'search?q=' : '') + encodeURIComponent(it.ean || it.name) + (k === 'kinderland' || k === 'dexter' || k === 'moov' || k === 'stockcenter' ? '' : '?_q=' + encodeURIComponent(it.ean || it.name) + '&map=ft'));
+      a.href = it.link || (TIENDA_HOST[k] + '/' + (k === 'brickstore' ? 'search/?q=' : k === 'kinderland' || k === 'dexter' || k === 'moov' || k === 'stockcenter' ? 'search?q=' : '') + encodeURIComponent(it.ean || it.name) + (k === 'brickstore' || k === 'kinderland' || k === 'dexter' || k === 'moov' || k === 'stockcenter' ? '' : '?_q=' + encodeURIComponent(it.ean || it.name) + '&map=ft'));
       a.innerHTML = '<span></span><span></span>';
       a.children[0].textContent = fmtQ(Math.max(1, Math.ceil(it.qty))) + ' × ' + it.name; a.children[1].textContent = 'Abrir ›';
       d.appendChild(a);
@@ -1606,7 +1608,7 @@
 
   // ---------- ajustes ----------
   let cfg = Object.assign({ suc: '200', auto: true, super: 'farmaonline' }, store.get('super-ajustes', {}));
-  const SUPERS = { cebra: 'Cebra', kinderland: 'Kinderland', dexter: 'Dexter', moov: 'Moov', stockcenter: 'Stock Center', sporting: 'Sporting', grid: 'Grid' };
+  const SUPERS = { cebra: 'Cebra', kinderland: 'Kinderland', brickstore: 'Brickstore', dexter: 'Dexter', moov: 'Moov', stockcenter: 'Stock Center', sporting: 'Sporting', grid: 'Grid' };
   if (!SUPERS[cfg.super]) cfg.super = 'farmaonline';
   function showCfg(){
     $('cfgSuc').value = cfg.suc || '200';
@@ -1959,7 +1961,7 @@
 
   // ---------- Secciones: Juguetes y Deporte (cada una busca en sus tiendas) ----------
   const SECCIONES = {
-    juguetes: { tiendas: ['cebra', 'kinderland'], chips: ['LEGO', 'Barbie', 'Hot Wheels', 'Play-Doh', 'Nerf', 'Juegos de mesa', 'Peluches', 'Muñecas', 'Autos a control remoto', 'Pista de autos'] },
+    juguetes: { tiendas: ['cebra', 'kinderland', 'brickstore'], chips: ['LEGO', 'Barbie', 'Hot Wheels', 'Play-Doh', 'Nerf', 'Juegos de mesa', 'Peluches', 'Muñecas', 'Autos a control remoto', 'Pista de autos'] },
     deporte: { tiendas: ['dexter', 'moov', 'stockcenter', 'sporting', 'grid'], chips: ['Zapatillas running', 'Nike Air Max', 'Adidas Samba', 'Botines', 'Camiseta Argentina', 'Buzo', 'Campera', 'Calza', 'Short', 'Medias', 'Mochila'] },
   };
   let seccion = SECCION_APP;   // cada sección es una app aparte: no se cambia desde adentro
@@ -2109,7 +2111,7 @@
   const lleva = p => { const m = /llevando\s*(\d+)/i.exec(p.promo || ''); return m ? +m[1] : 1; };
   const effPrice = p => p.precio_promo || p.precio;
   // Rodó no publica códigos de barras: se busca por el nombre y se reconoce el producto por el modelo
-  const POR_NOMBRE = { kinderland: 1, dexter: 1, moov: 1, stockcenter: 1 };
+  const POR_NOMBRE = { brickstore: 1, kinderland: 1, dexter: 1, moov: 1, stockcenter: 1 };
   async function compareAll(ean, nombre){
     const my = ++cmpReq;
     cmpState = { ean, res: {} };
@@ -2627,7 +2629,7 @@
   }
 
   let planTienda = null;
-  const COLOR_TIENDA = { coto: '#E30613', carrefour: '#1E4B9B', dia: '#E2001A', changomas: '#00A651', jumbo: '#2E9E44', vea: '#D7182A', disco: '#C8102E', naldo: '#E30613', cetrogar: '#0047BB', oncity: '#F15A22', samsung: '#1428A0', motorola: '#001428', rodo: '#D52B1E', ipoint: '#1D1D1F', macstation: '#0071E3', cebra: '#E4002B', kinderland: '#7B2CBF', fravega: '#2D2E83', dexter: '#E30613', moov: '#111111', stockcenter: '#F7A600', sporting: '#0033A0', grid: '#000000' };
+  const COLOR_TIENDA = { brickstore: '#E3000B', coto: '#E30613', carrefour: '#1E4B9B', dia: '#E2001A', changomas: '#00A651', jumbo: '#2E9E44', vea: '#D7182A', disco: '#C8102E', naldo: '#E30613', cetrogar: '#0047BB', oncity: '#F15A22', samsung: '#1428A0', motorola: '#001428', rodo: '#D52B1E', ipoint: '#1D1D1F', macstation: '#0071E3', cebra: '#E4002B', kinderland: '#7B2CBF', fravega: '#2D2E83', dexter: '#E30613', moov: '#111111', stockcenter: '#F7A600', sporting: '#0033A0', grid: '#000000' };
   const OTRA_APP = { url: 'https://compras-super-cart.vercel.app', nombre: 'Super Cart', lugar: 'el súper', titulo: 'Más barato en el súper' };
   const paraCruce = it => true;
   // Cruce con la otra app: productos de esta lista que hoy salen más baratos en las tiendas de la otra
@@ -4088,7 +4090,7 @@
 
   // ---------- cuenta de Google (Supabase) ----------
   let sb = null, user = null, perfil = null, sessionUid = null, esAdmin = false, tieneSupers = true;
-  const SUPERS_MAIL = ['cebra', 'kinderland', 'dexter', 'moov', 'stockcenter', 'sporting', 'grid'];
+  const SUPERS_MAIL = ['cebra', 'kinderland', 'brickstore', 'dexter', 'moov', 'stockcenter', 'sporting', 'grid'];
   async function initSupabase(){
     try {
       const c = await (await fetch('/api/config')).json();
@@ -4434,7 +4436,7 @@
     const sup = Array.isArray(p.supers) && p.supers.length ? p.supers : SUPERS_MAIL;
     $('supersBox').hidden = (p.modo || 'resumen') !== 'resumen';
     document.querySelectorAll('#supersSel input').forEach(c => { c.checked = sup.includes(c.value); c.disabled = c.checked && sup.length === 1; });
-    const nom = { cebra: 'Cebra', kinderland: 'Kinderland', dexter: 'Dexter', moov: 'Moov', stockcenter: 'Stock Center', sporting: 'Sporting', grid: 'Grid' };
+    const nom = { cebra: 'Cebra', kinderland: 'Kinderland', brickstore: 'Brickstore', dexter: 'Dexter', moov: 'Moov', stockcenter: 'Stock Center', sporting: 'Sporting', grid: 'Grid' };
     $('supersTxt').textContent = sup.length > 1 ? `Te llega un solo mail comparando ${sup.map(s => nom[s]).join(', ').replace(/, ([^,]*)$/, ' y $1')}: el total de tu lista en cada uno y el precio de cada producto, con el más barato marcado.` : `Te llegan los precios de ${nom[sup[0]]}, con las ofertas arriba.`;
     const g = store.get('sale-guardado', 0), n = lists.reduce((s, l) => s + l.items.length, 0);
     $('syncState').textContent = `${lists.length} ${lists.length === 1 ? 'lista' : 'listas'} con ${n} productos guardadas en tu cuenta`

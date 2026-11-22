@@ -152,3 +152,9 @@ alter table public.tecno_perfiles drop constraint if exists tecno_supers_validos
 alter table public.tecno_perfiles add constraint tecno_supers_validos check (cardinality(supers) > 0 and supers <@ array['naldo', 'cetrogar', 'oncity', 'fravega', 'samsung', 'motorola', 'rodo', 'ipoint', 'macstation']);
 alter table public.tecno_perfiles alter column supers set default array['naldo', 'cetrogar', 'oncity', 'fravega', 'samsung', 'motorola', 'rodo', 'ipoint', 'macstation'];
 update public.tecno_perfiles set supers = supers || array['fravega'] where not (supers @> array['fravega']);
+
+-- Brickstore (tienda oficial de LEGO en Argentina): se suma a las tiendas que se pueden elegir para el mail
+alter table public.jyd_perfiles drop constraint if exists jyd_supers_validos;
+alter table public.jyd_perfiles add constraint jyd_supers_validos check (cardinality(supers) > 0 and supers <@ array['cebra', 'kinderland', 'brickstore', 'fravega', 'dexter', 'moov', 'stockcenter', 'sporting', 'grid']);
+alter table public.jyd_perfiles alter column supers set default array['cebra', 'kinderland', 'brickstore', 'dexter', 'moov', 'stockcenter', 'sporting', 'grid'];
+update public.jyd_perfiles set supers = supers || array['brickstore'] where not (supers @> array['brickstore']);
