@@ -267,6 +267,13 @@ async function handler(req, res) {
       if (r.ps.some(p => p.exacto)) { productos = r.ps; buscadoPor = 'modelo'; }
     }
     if (!productos.length) { const r = await buscarEn(q, ean); productos = r.ps; buscadoPor = r.por; }
+    // Número suelto sin la letra del modelo: también se busca sin el número y sin la palabra genérica
+    const qSinNum = !ean ? rel.sinNumeros(q) : q;
+    if (qSinNum && qSinNum !== q) {
+      for (const x of [qSinNum, rel.sinGenericos(qSinNum)].filter((x, i, a) => x && a.indexOf(x) === i)) {
+        try { const r3 = await buscarEn(x, ''); const ya = new Set(productos.map(p => p.link)); r3.ps.forEach(p => { if (p.link && !ya.has(p.link)) { ya.add(p.link); productos.push(p); } }); } catch (_) { /* con lo que hay */ }
+      }
+    }
     // Con medida, también se busca con la medida puesta (la tienda devuelve primero los más grandes)
     if (medQ.length) {
       try { const r2 = await buscarEn(qOriginal, ''); const ya = new Set(productos.map(p => p.link)); r2.ps.forEach(p => { if (p.link && !ya.has(p.link)) { ya.add(p.link); productos.push(p); } }); } catch (_) { /* con lo que hay */ }
